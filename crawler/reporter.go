@@ -3,6 +3,8 @@ package crawler
 import (
 	"fmt"
 	"io"
+
+	"github.com/aws/aws-sdk-go/aws"
 )
 
 type result struct {
@@ -18,11 +20,20 @@ type reporter struct {
 }
 
 func newReporter(results chan *result, writer io.Writer) *reporter {
-	return &reporter{
+	r := &reporter{
 		results: results,
 		writer:  writer,
 		done:    make(chan bool, 1),
 	}
+	// Print Header
+
+	r.print(&result{
+		ID:            aws.String("ID"),
+		Type:          aws.String("Type"),
+		SecurityGroup: aws.String("SecurityGroup"),
+	})
+	return r
+
 }
 
 func (r *reporter) run() {
