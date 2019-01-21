@@ -8,6 +8,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/aws/aws-sdk-go/service/elbv2"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -57,6 +59,7 @@ func Crawl() {
 	crawlers := []func(*awsClient, chan *result){
 		crawlEC2,
 		crawlRDS,
+		crawlELBV2,
 	}
 	wg.Add(len(crawlers))
 
@@ -80,10 +83,12 @@ func getAWSClient() *awsClient {
 		})
 	client.ec2Conn = ec2.New(sess)
 	client.rdsConn = rds.New(sess)
+	client.elbv2Conn = elbv2.New(sess)
 	return client
 }
 
 type awsClient struct {
-	ec2Conn *ec2.EC2
-	rdsConn *rds.RDS
+	ec2Conn   *ec2.EC2
+	rdsConn   *rds.RDS
+	elbv2Conn *elbv2.ELBV2
 }
