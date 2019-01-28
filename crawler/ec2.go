@@ -14,7 +14,6 @@ func crawlEC2(client *awsClient, results chan *result) {
 	for _, rsv := range res.Reservations {
 		for _, instance := range rsv.Instances {
 			if instance.State != nil && *instance.State.Name != "terminated" {
-
 				for _, sg := range instance.SecurityGroups {
 					results <- &result{
 						ID:            instance.InstanceId,

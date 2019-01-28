@@ -16,14 +16,14 @@ type result struct {
 type reporter struct {
 	writer  io.Writer
 	results chan *result
-	done    chan bool
+	done    chan struct{}
 }
 
 func newReporter(results chan *result, writer io.Writer) *reporter {
 	r := &reporter{
 		results: results,
 		writer:  writer,
-		done:    make(chan bool, 1),
+		done:    make(chan struct{}, 1),
 	}
 	// Print Header
 
@@ -41,7 +41,7 @@ func (r *reporter) run() {
 		r.print(res)
 	}
 	//result channel is closed and the reporter reports its work is done
-	r.done <- true
+	r.done <- struct{}{}
 }
 
 func (r *reporter) print(res *result) {

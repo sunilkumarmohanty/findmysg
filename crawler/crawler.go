@@ -8,7 +8,11 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
+	"github.com/aws/aws-sdk-go/service/elbv2/elbv2iface"
 	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/aws/aws-sdk-go/service/lambda/lambdaiface"
+	"github.com/aws/aws-sdk-go/service/rds/rdsiface"
 
 	"github.com/aws/aws-sdk-go/service/elbv2"
 
@@ -47,13 +51,16 @@ func Crawl() {
 		writer = os.Stdout
 	}
 
-	// TOOD : Do we need a new reporter instance
-
-	// For development use os.Stdout
 	results := make(chan *result)
 
 	reporter := newReporter(results, writer)
 	client := getAWSClient()
+
+	start(reporter, writer, client, results)
+
+}
+
+func start(reporter *reporter, writer io.Writer, client *awsClient, results chan *result) {
 	go reporter.run()
 
 	// Start each crawler one by one
@@ -92,8 +99,8 @@ func getAWSClient() *awsClient {
 }
 
 type awsClient struct {
-	ec2Conn    *ec2.EC2
-	rdsConn    *rds.RDS
-	elbv2Conn  *elbv2.ELBV2
-	lambdaConn *lambda.Lambda
+	ec2Conn    ec2iface.EC2API
+	rdsConn    rdsiface.RDSAPI
+	elbv2Conn  elbv2iface.ELBV2API
+	lambdaConn lambdaiface.LambdaAPI
 }
