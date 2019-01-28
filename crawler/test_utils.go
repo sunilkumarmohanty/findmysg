@@ -2,6 +2,7 @@ package crawler
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 )
@@ -18,7 +19,7 @@ func validateResults(results []*result, resources []testResource, resourceType s
 	}
 
 	if len(results) != totalResSG {
-		return false, errors.New("Length did not match")
+		return false, fmt.Errorf("Length did not match. Expected %v go %v", totalResSG, len(results))
 	}
 	// The results will be in the same order as the resources
 	var i = 0
