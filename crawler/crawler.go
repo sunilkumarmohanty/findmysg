@@ -9,6 +9,8 @@ import (
 	"sync"
 
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
+	"github.com/aws/aws-sdk-go/service/elasticache"
+	"github.com/aws/aws-sdk-go/service/elasticache/elasticacheiface"
 	"github.com/aws/aws-sdk-go/service/elbv2/elbv2iface"
 	"github.com/aws/aws-sdk-go/service/lambda"
 	"github.com/aws/aws-sdk-go/service/lambda/lambdaiface"
@@ -95,12 +97,14 @@ func getAWSClient() *awsClient {
 	client.rdsConn = rds.New(sess)
 	client.elbv2Conn = elbv2.New(sess)
 	client.lambdaConn = lambda.New(sess)
+	client.elastiCacheConn = elasticache.New(sess)
 	return client
 }
 
 type awsClient struct {
-	ec2Conn    ec2iface.EC2API
-	rdsConn    rdsiface.RDSAPI
-	elbv2Conn  elbv2iface.ELBV2API
-	lambdaConn lambdaiface.LambdaAPI
+	ec2Conn         ec2iface.EC2API
+	rdsConn         rdsiface.RDSAPI
+	elbv2Conn       elbv2iface.ELBV2API
+	lambdaConn      lambdaiface.LambdaAPI
+	elastiCacheConn elasticacheiface.ElastiCacheAPI
 }
